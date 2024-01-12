@@ -6,6 +6,7 @@ import com.example.auth.user.DTOs.RegisterDTO;
 import com.example.auth.infra.security.TokenService;
 import com.example.auth.user.User;
 import com.example.auth.user.UserRepository;
+import com.example.auth.user.UserRole;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +43,7 @@ public class UserAuthenticationController {
         if(this.repository.findByEmail(data.email()) != null) return ResponseEntity.badRequest().build();
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        User newUser = new User(data.email(), encryptedPassword, data.role());
+        User newUser = new User(null, data.name(), data.email(), data.phoneNumber(), encryptedPassword, UserRole.USER);
 
         this.repository.save(newUser);
 

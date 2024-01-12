@@ -14,7 +14,7 @@ import java.util.List;
 @Entity(name = "users")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
     private String email;
@@ -35,8 +35,9 @@ public class User implements UserDetails {
         this.role = role;
     }
 
-    public User(Integer id, String email, String phoneNumber, String password, UserRole role) {
+    public User(Integer id, String name, String email, String phoneNumber, String password, UserRole role) {
         this.id = id;
+        this.name = name;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
