@@ -5,10 +5,11 @@ import com.example.auth.user.DTOs.LoginResponseDTO;
 import com.example.auth.user.DTOs.RegisterDTO;
 import com.example.auth.infra.security.TokenService;
 import com.example.auth.user.User;
-import com.example.auth.user.UserRepository;
 import com.example.auth.user.UserRole;
+import com.example.auth.user.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,7 +25,7 @@ public class UserAuthenticationController {
     @Autowired
     private AuthenticationManager authenticationManager;
     @Autowired
-    private UserRepository repository;
+    private UserService userService;
     @Autowired
     private TokenService tokenService;
 
@@ -40,12 +41,13 @@ public class UserAuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterDTO data){
-        if(this.repository.findByEmail(data.email()) != null) return ResponseEntity.badRequest().build();
+        if(userService.isEmailRegistered(data.email()))
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("email already registered");
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
         User newUser = new User(null, data.name(), data.email(), data.phoneNumber(), encryptedPassword, UserRole.USER);
 
-        this.repository.save(newUser);
+        userService.save(newUser);
 
         return ResponseEntity.ok().build();
     }
