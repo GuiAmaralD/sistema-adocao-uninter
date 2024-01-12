@@ -1,9 +1,11 @@
-package com.example.auth.user;
+package com.example.auth.user.controllers;
 
 import com.example.auth.user.DTOs.AuthenticationDTO;
 import com.example.auth.user.DTOs.LoginResponseDTO;
 import com.example.auth.user.DTOs.RegisterDTO;
 import com.example.auth.infra.security.TokenService;
+import com.example.auth.user.User;
+import com.example.auth.user.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
