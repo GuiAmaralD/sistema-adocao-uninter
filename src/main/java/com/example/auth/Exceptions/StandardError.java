@@ -28,6 +28,10 @@ public class StandardError implements Serializable {
         this.path = path;
     }
 
+    public static StandardError init(Integer status, String error, String message, String path){
+        return new StandardError(Instant.now(), status, error, message, path);
+    }
+
     public Instant getTimestamp() {
         return timestamp;
     }
@@ -67,4 +71,6 @@ public class StandardError implements Serializable {
     public void setPath(String path) {
         this.path = path;
     }
+
+
 }
