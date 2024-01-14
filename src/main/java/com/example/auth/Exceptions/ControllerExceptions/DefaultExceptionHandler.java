@@ -1,6 +1,5 @@
 package com.example.auth.Exceptions.ControllerExceptions;
 
-import com.example.auth.Exceptions.CustomExceptions.ResourceNotFoundException;
 import com.example.auth.Exceptions.StandardError;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
@@ -13,30 +12,21 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class DefaultExceptionHandler{
 
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<StandardError> resourceNotFound(ResourceNotFoundException e, HttpServletRequest request){
-        int code = HttpStatus.NOT_FOUND.value();
-        String error = "resource not found";
-        StandardError err = StandardError.init(code, error, e.getMessage(), request.getRequestURI());
-
-        return ResponseEntity.status(code).body(err);
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<StandardError> invalidInput(MethodArgumentNotValidException e, HttpServletRequest request){
-        int code = HttpStatus.UNPROCESSABLE_ENTITY.value();
+        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
         String error = "invalid data input";
-        StandardError err = StandardError.init(code, error, e.getMessage(), request.getRequestURI());
+        StandardError err = StandardError.init(status, error, e.getMessage(), request.getRequestURI());
 
-        return ResponseEntity.status(code).body(err);
+        return ResponseEntity.status(status).body(err);
     }
 
     @ExceptionHandler(AuthenticationException.class)
     public ResponseEntity<StandardError> handleAuthenticationException(AuthenticationException e, HttpServletRequest request){
-        int code = HttpStatus.FORBIDDEN.value();
-        String error = "Wrong email OR password";
-        StandardError err = StandardError.init(code, error, e.getMessage(), request.getRequestURI());
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        String error = "Authentication error";
+        StandardError err = StandardError.init(status, error, e.getMessage(), request.getRequestURI());
 
-        return ResponseEntity.status(code).body(err);
+        return ResponseEntity.status(status).body(err);
     }
 }

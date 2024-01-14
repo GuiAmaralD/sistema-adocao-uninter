@@ -5,13 +5,14 @@ import java.io.Serializable;
 import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.http.HttpStatus;
 
 public class StandardError implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
     private Instant timestamp;
-    private Integer status;
+    private HttpStatus status;
     private String error;
     private String message;
     private String path;
@@ -19,7 +20,7 @@ public class StandardError implements Serializable {
     public StandardError() {
     }
 
-    public StandardError(Instant timestamp, Integer status, String error, String message, String path) {
+    public StandardError(Instant timestamp, HttpStatus status, String error, String message, String path) {
         super();
         this.timestamp = timestamp;
         this.status = status;
@@ -28,7 +29,7 @@ public class StandardError implements Serializable {
         this.path = path;
     }
 
-    public static StandardError init(Integer status, String error, String message, String path){
+    public static StandardError init(HttpStatus status, String error, String message, String path){
         return new StandardError(Instant.now(), status, error, message, path);
     }
 
@@ -40,11 +41,11 @@ public class StandardError implements Serializable {
         this.timestamp = timestamp;
     }
 
-    public Integer getStatus() {
+    public HttpStatus getStatus() {
         return status;
     }
 
-    public void setStatus(Integer status) {
+    public void setStatus(HttpStatus status) {
         this.status = status;
     }
 
