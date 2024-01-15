@@ -11,8 +11,8 @@ public record RegisterDTO(
         @Pattern(regexp = "^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$", message = "name should contain only letters")
         @Size(max = 55)
         String name,
-        @Size(min= 8, max=16, message = "invalid phone number length")
-        @Pattern(regexp = "^[0-9]*$", message = "invalid phoneNumber entry")
+        @Size(min= 8, max=16, message = "invalid phone number length (min = 8, max = 16)")
+        @Pattern(regexp = "^[0-9]*$", message = "invalid phoneNumber entry, only numbers are accepted")
         String phoneNumber,
         @Email(message = "email should be valid")
         @NotBlank(message = "email should not be blank")

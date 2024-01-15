@@ -8,25 +8,25 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
 public class DefaultExceptionHandler{
 
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<StandardError> invalidInput(MethodArgumentNotValidException e, HttpServletRequest request){
-        HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
-        String error = "invalid data input";
-        StandardError err = StandardError.init(status, error, e.getMessage(), request.getRequestURI());
+        StandardError err = StandardError
+                .init(e.getStatusCode(), e.getFieldError().getDefaultMessage(), request.getRequestURI());
 
-        return ResponseEntity.status(status).body(err);
+        return ResponseEntity.status(e.getStatusCode()).body(err);
     }
 
-    @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<StandardError> handleAuthenticationException(AuthenticationException e, HttpServletRequest request){
-        HttpStatus status = HttpStatus.FORBIDDEN;
-        String error = "Authentication error";
-        StandardError err = StandardError.init(status, error, e.getMessage(), request.getRequestURI());
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<StandardError> handleAuthenticationException(ResponseStatusException e, HttpServletRequest request){
+        StandardError err = StandardError
+                .init(e.getStatusCode(),  e.getMessage(), request.getRequestURI());
 
-        return ResponseEntity.status(status).body(err);
+        return ResponseEntity.status(e.getStatusCode()).body(err);
     }
 }

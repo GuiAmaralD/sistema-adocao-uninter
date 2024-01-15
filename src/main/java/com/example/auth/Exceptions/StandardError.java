@@ -5,32 +5,30 @@ import java.io.Serializable;
 import java.time.Instant;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 public class StandardError implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
     private Instant timestamp;
-    private HttpStatus status;
-    private String error;
+    private HttpStatusCode status;
     private String message;
     private String path;
 
     public StandardError() {
     }
 
-    public StandardError(Instant timestamp, HttpStatus status, String error, String message, String path) {
+    public StandardError(Instant timestamp, HttpStatusCode status, String message, String path) {
         super();
         this.timestamp = timestamp;
         this.status = status;
-        this.error = error;
         this.message = message;
         this.path = path;
     }
 
-    public static StandardError init(HttpStatus status, String error, String message, String path){
-        return new StandardError(Instant.now(), status, error, message, path);
+    public static StandardError init(HttpStatusCode status, String message, String path){
+        return new StandardError(Instant.now(), status, message, path);
     }
 
     public Instant getTimestamp() {
@@ -41,20 +39,12 @@ public class StandardError implements Serializable {
         this.timestamp = timestamp;
     }
 
-    public HttpStatus getStatus() {
+    public HttpStatusCode getStatus() {
         return status;
     }
 
-    public void setStatus(HttpStatus status) {
+    public void setStatus(HttpStatusCode status) {
         this.status = status;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
     }
 
     public String getMessage() {
