@@ -1,7 +1,7 @@
 package com.example.auth.user.controllers;
 
 
-import com.example.auth.user.UserService;
+import com.example.auth.user.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

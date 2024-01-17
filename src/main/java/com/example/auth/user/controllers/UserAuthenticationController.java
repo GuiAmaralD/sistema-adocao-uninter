@@ -6,7 +6,7 @@ import com.example.auth.user.DTOs.RegisterDTO;
 import com.example.auth.infra.security.TokenService;
 import com.example.auth.user.User;
 import com.example.auth.user.UserRole;
-import com.example.auth.user.UserService;
+import com.example.auth.user.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
