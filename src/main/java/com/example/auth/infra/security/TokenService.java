@@ -31,7 +31,7 @@ public class TokenService {
         }
     }
 
-    public String validateToken(String token){
+    public String getUsernameFromToken(String token){
         try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
@@ -44,7 +44,23 @@ public class TokenService {
         }
     }
 
+    public boolean validateToken(String token){
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            JWT.require(algorithm)
+                    .withIssuer("auth-api")
+                    .build()
+                    .verify(token)
+                    .getSubject();
+            return true;
+        } catch (Exception ex){
+            throw new JWTVerificationException("JWT was expired or incorrect",ex.fillInStackTrace());
+        }
+    }
+
+
+
     private Instant genExpirationDate(){
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
+        return LocalDateTime.now().plusHours(24).toInstant(ZoneOffset.of("-03:00"));
     }
 }

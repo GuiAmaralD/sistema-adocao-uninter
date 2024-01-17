@@ -57,7 +57,7 @@ public class UserAuthenticationController {
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterDTO data){
         if(userService.isEmailRegistered(data.email()))
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("email already registered");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "email already registered");
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
         User newUser = new User(null, data.name(), data.email(), data.phoneNumber(), encryptedPassword, UserRole.USER);

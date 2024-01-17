@@ -1,8 +1,10 @@
 package com.example.auth.Exceptions.ControllerExceptions;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.example.auth.Exceptions.StandardError;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
