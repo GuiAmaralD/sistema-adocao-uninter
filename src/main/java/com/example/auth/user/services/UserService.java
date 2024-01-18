@@ -8,14 +8,25 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.Objects;
 
 @Service
 public class UserService {
 
-    @Autowired
     private UserRepository userRepository;
+
+    private BCryptPasswordEncoder passwordEncoder;
+
+
+    @Autowired
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder){
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
     public User findById(Integer id){
        User user = userRepository.findById(id)
@@ -48,5 +59,22 @@ public class UserService {
         user.setPhoneNumber(dto.phoneNumber());
 
         return userRepository.save(user);
+    }
+
+    @Transactional
+    public void updatePassword(Integer id, String oldPassword, String newPassword){
+        User user = this.findById(id);
+
+        if(!passwordEncoder.matches(oldPassword, user.getPassword())){
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Given old password is wrong!");
+        }else{
+            if(Objects.equals(oldPassword, newPassword)){
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "New and old passwords cannot be the same");
+            }
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+
+        userRepository.save(user);
     }
 }
