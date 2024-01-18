@@ -2,8 +2,8 @@ package com.example.auth.user.controllers;
 
 import com.example.auth.user.DTOs.AuthenticationDTO;
 import com.example.auth.user.DTOs.LoginResponseDTO;
-import com.example.auth.user.DTOs.RegisterDTO;
 import com.example.auth.infra.security.TokenService;
+import com.example.auth.user.DTOs.RegisterUpdateDTO;
 import com.example.auth.user.User;
 import com.example.auth.user.UserRole;
 import com.example.auth.user.services.UserService;
@@ -55,7 +55,7 @@ public class UserAuthenticationController {
 
     
     @PostMapping("/register")
-    public ResponseEntity register(@RequestBody @Valid RegisterDTO data){
+    public ResponseEntity register(@RequestBody @Valid RegisterUpdateDTO data){
         if(userService.isEmailRegistered(data.email()))
             throw new ResponseStatusException(HttpStatus.CONFLICT, "email already registered");
 
