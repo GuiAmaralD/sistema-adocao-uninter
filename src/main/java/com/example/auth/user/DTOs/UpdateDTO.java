@@ -5,8 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public record RegisterUpdateDTO(
-
+public record UpdateDTO(
         @NotBlank(message = "name should not be blank")
         @Pattern(regexp = "^[A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ ]+$", message = "name should contain only letters")
         @Size(max = 55, message = "invalid name length (max = 55)")
@@ -16,8 +15,6 @@ public record RegisterUpdateDTO(
         String phoneNumber,
         @Email(message = "email should be valid")
         @NotBlank(message = "email should not be blank")
-        String email,
-        @Size(max = 30, message = "maximum 30 characters allowed for password")
-        String password
+        String email
 ) {
 }
