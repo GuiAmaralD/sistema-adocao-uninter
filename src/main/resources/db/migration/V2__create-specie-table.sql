@@ -1,7 +1,6 @@
 CREATE TABLE IF NOT EXISTS public.specie
 (
-    name smallint,
+    name character varying(30),
     id serial NOT NULL,
-    CONSTRAINT specie_pkey PRIMARY KEY (id),
-    CONSTRAINT specie_name_check CHECK (name >= 0 AND name <= 2)
+    CONSTRAINT specie_pkey PRIMARY KEY (id)
 );
