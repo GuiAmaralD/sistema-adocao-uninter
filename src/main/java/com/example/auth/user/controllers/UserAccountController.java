@@ -1,29 +1,21 @@
 package com.example.auth.user.controllers;
 
 
-import com.example.auth.user.DTOs.ChangePasswordDto;
+import com.example.auth.user.DTOs.ChangePasswordDTO;
 import com.example.auth.user.DTOs.UpdateDTO;
 import com.example.auth.user.User;
 import com.example.auth.user.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
-import java.util.Map;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("account")
@@ -52,7 +44,7 @@ public class UserAccountController {
     }
 
     @PutMapping("/password")
-    public ResponseEntity<String> updatePassword(@RequestBody @Valid ChangePasswordDto dto, Principal principal){
+    public ResponseEntity<String> updatePassword(@RequestBody @Valid ChangePasswordDTO dto, Principal principal){
 
         User user = (User) userService.findByEmail(principal.getName());
         Integer id = user.getId();

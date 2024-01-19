@@ -1,7 +1,6 @@
 package com.example.auth.user.controllers;
 
 import com.example.auth.user.DTOs.AuthenticationDTO;
-import com.example.auth.user.DTOs.LoginResponseDTO;
 import com.example.auth.infra.security.TokenService;
 import com.example.auth.user.DTOs.RegisterDTO;
 import com.example.auth.user.User;
@@ -24,6 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("auth")
 public class UserAuthenticationController {
@@ -35,22 +37,25 @@ public class UserAuthenticationController {
     private TokenService tokenService;
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data){
+    public ResponseEntity<Map<String, String>> login(@RequestBody @Valid AuthenticationDTO data){
         Authentication auth;
         try{
              auth = authenticationManager
                     .authenticate(new UsernamePasswordAuthenticationToken(data.email(), data.password()));
         }
-        catch(BadCredentialsException ex){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "authentication failure, bad credentials", ex);
-        }
         catch(UsernameNotFoundException | InternalAuthenticationServiceException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Email not registered", ex);
+        }
+        catch(BadCredentialsException ex){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "authentication failure, bad credentials", ex);
         }
 
         String token = tokenService.generateToken((User) auth.getPrincipal());
 
-        return ResponseEntity.ok(new LoginResponseDTO(token));
+        Map<String, String> jsonToken = new HashMap<>();
+        jsonToken.put("token", token);
+
+        return ResponseEntity.ok(jsonToken);
     }
 
     
