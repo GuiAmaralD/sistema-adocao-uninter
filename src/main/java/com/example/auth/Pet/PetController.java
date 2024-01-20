@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -68,6 +69,19 @@ public class PetController {
             petService.save(pet);
         }
         return ResponseEntity.internalServerError().build();
+    }
+
+    @PutMapping("/{id}/adopted")
+    public ResponseEntity<Pet> setAdoptedTrue(@PathVariable Long id, Principal principal){
+        Pet pet = petService.findById(id);
+        if(petService.isPetFromLoggedUser(id, principal)){
+            pet.setAdopted(true);
+            petService.save(pet);
+        }else{
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                    "You can only update your pets data");
+        }
+        return ResponseEntity.ok().build();
     }
 
     private boolean isSpecieValid(String specie){

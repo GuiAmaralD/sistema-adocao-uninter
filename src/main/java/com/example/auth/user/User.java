@@ -93,6 +93,10 @@ public class User implements Serializable, UserDetails {
         this.role = role;
     }
 
+    public List<Pet> getRegisteredPets(){
+        return registeredPets;
+    }
+
     public boolean isPetInUserListAlready(Pet pet){
         for(Pet pets : registeredPets){
             if(pet.equals(pets)){
