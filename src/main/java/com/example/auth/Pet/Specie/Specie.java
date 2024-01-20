@@ -21,6 +21,10 @@ public class Specie implements Serializable {
     @Column(name = "name")
     private String name;
 
+    public Specie(){
+
+    }
+
     public Specie(Long id, String specieName) {
         this.id = id;
         this.name = specieName;

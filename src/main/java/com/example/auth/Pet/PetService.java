@@ -1,6 +1,7 @@
 package com.example.auth.Pet;
 
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,5 +26,8 @@ public class PetService {
                                 "Pet with such Id not found"));
     }
 
-
+    @Transactional
+    public Pet save(Pet pet){
+        return petRepository.save(pet);
+    }
 }

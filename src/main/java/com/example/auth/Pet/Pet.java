@@ -15,6 +15,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name= "pet")
@@ -24,7 +25,7 @@ public class Pet implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nickname;
-    private Character sex;
+    private String sex;
     private String description;
 
     @CreatedDate
@@ -37,8 +38,22 @@ public class Pet implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @JsonIgnore
     private User user;
+
+    public Pet(){
+
+    }
+
+    public Pet(Long id, String nickname, String sex, String description, Date registeredAt, boolean adopted, Specie specie, User user) {
+        this.id = id;
+        this.nickname = nickname;
+        this.sex = sex;
+        this.description = description;
+        this.registeredAt = registeredAt;
+        this.adopted = adopted;
+        this.specie = specie;
+        this.user = user;
+    }
 
     public Long getId() {
         return id;
@@ -56,11 +71,11 @@ public class Pet implements Serializable {
         this.nickname = nickname;
     }
 
-    public Character getSex() {
+    public String getSex() {
         return sex;
     }
 
-    public void setSex(Character sex) {
+    public void setSex(String sex) {
         this.sex = sex;
     }
 
@@ -102,5 +117,18 @@ public class Pet implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pet pet = (Pet) o;
+        return Objects.equals(nickname, pet.nickname) && Objects.equals(sex, pet.sex) && Objects.equals(description, pet.description) && Objects.equals(specie, pet.specie);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nickname, sex, description, specie);
     }
 }

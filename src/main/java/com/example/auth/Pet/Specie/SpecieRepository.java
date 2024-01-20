@@ -11,4 +11,6 @@ public interface SpecieRepository extends JpaRepository<Specie, Long> {
 
     @Query("select s.name from Specie s")
     List<String> getAllNames();
+
+    Specie findByName(String name);
 }

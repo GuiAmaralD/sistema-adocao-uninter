@@ -93,6 +93,15 @@ public class User implements Serializable, UserDetails {
         this.role = role;
     }
 
+    public boolean isPetInUserListAlready(Pet pet){
+        for(Pet pets : registeredPets){
+            if(pet.equals(pets)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if(this.role == UserRole.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
@@ -129,13 +138,6 @@ public class User implements Serializable, UserDetails {
         return true;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id);
-    }
 
     @Override
     public int hashCode() {

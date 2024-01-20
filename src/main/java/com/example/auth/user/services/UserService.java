@@ -39,6 +39,7 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
+    @Transactional
     public UserDetails save(User user){
         return userRepository.save(user);
     }
