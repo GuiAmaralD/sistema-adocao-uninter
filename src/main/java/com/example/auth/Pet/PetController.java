@@ -3,15 +3,14 @@ package com.example.auth.Pet;
 
 import com.example.auth.Pet.DTOs.RegisterPetDTO;
 import com.example.auth.Pet.Specie.Specie;
+import com.example.auth.Pet.Specie.SpecieName;
 import com.example.auth.Pet.Specie.SpecieRepository;
 import com.example.auth.user.User;
 import com.example.auth.user.services.UserService;
 import jakarta.validation.Valid;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,20 +55,14 @@ public class PetController {
                                               Principal principal){
         User user = (User) userService.findByEmail(principal.getName());
 
-        if(isSpecieValid(dto.specie())){
-            Specie specie = specieRepository.findByName(dto.specie());
+        Specie specie = specieRepository.findByName(SpecieName.fromString(dto.specie()));
 
-            Pet pet = new Pet(null, dto.nickname(), dto.sex(), dto.description(),
-                    new Date(System.currentTimeMillis()), false, specie, user);
+        Pet pet = new Pet(null, dto.nickname(), dto.sex(), dto.description(),
+                new Date(System.currentTimeMillis()), false, specie, user);
 
-            if(user.isPetInUserListAlready(pet)){
-                throw new ResponseStatusException(HttpStatus.CONFLICT,
-                        "There is a pet with the exact same information registered in your " +
-                                "account. How is that even possible?!");
-            }
-            petService.save(pet);
-        }
-        return ResponseEntity.internalServerError().build();
+        petService.save(pet);
+
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}/adopted")
@@ -83,17 +76,5 @@ public class PetController {
                     "You can only update your pets data");
         }
         return ResponseEntity.ok().build();
-    }
-
-    private boolean isSpecieValid(String specie){
-        List<String> list = specieRepository.getAllNames();
-
-        if(!list.contains(specie)){
-            String result = "(" + StringUtils.join(list, ") (") + ")";
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY,
-                    "Given specie cannot be persisted. Current valid species: "+
-                            result);
-        }
-        return true;
     }
 }

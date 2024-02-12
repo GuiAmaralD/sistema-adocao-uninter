@@ -1,5 +1,7 @@
 package com.example.auth.Pet.DTOs;
 
+import com.example.auth.Pet.Specie.SpecieName;
+import com.example.auth.Utils.EnumValidator.EnumValidator;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -15,6 +17,10 @@ public record RegisterPetDTO(
         String sex,
         @Size(max = 255, message="limit of 255 characters for description property")
         String description,
+        @EnumValidator(
+                enumClass = SpecieName.class,
+                message = "nome de especie não é válido"
+        )
         String specie
 ) {
 }

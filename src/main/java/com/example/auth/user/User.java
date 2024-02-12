@@ -28,6 +28,7 @@ public class User implements Serializable, UserDetails {
     private UserRole role;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Pet> registeredPets = new ArrayList<>();
 
     public User(){
