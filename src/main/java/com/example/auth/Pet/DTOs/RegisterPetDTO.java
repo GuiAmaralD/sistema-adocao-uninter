@@ -1,5 +1,6 @@
 package com.example.auth.Pet.DTOs;
 
+import com.example.auth.Pet.Size.SizeName;
 import com.example.auth.Pet.Specie.SpecieName;
 import com.example.auth.Utils.EnumValidator.EnumValidator;
 import jakarta.validation.constraints.NotBlank;
@@ -21,6 +22,11 @@ public record RegisterPetDTO(
                 enumClass = SpecieName.class,
                 message = "nome de especie não é válido"
         )
-        String specie
+        String specie,
+        @EnumValidator(
+                enumClass = SizeName.class,
+                message= "nome de porte não é válido"
+        )
+        String size
 ) {
 }

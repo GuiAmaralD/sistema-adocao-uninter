@@ -1,12 +1,11 @@
 package com.example.auth.Pet;
 
 
+import com.example.auth.Pet.Size.PetSize;
 import com.example.auth.Pet.Specie.Specie;
 import com.example.auth.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -40,6 +39,9 @@ public class Pet implements Serializable {
     private Specie specie;
 
     @ManyToOne
+    private PetSize size;
+
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
@@ -47,11 +49,12 @@ public class Pet implements Serializable {
 
     }
 
-    public Pet(Long id, String nickname, String sex, String description, Date registeredAt, boolean adopted, Specie specie, User user) {
+    public Pet(Long id, String nickname, String sex, String description, PetSize size, Date registeredAt, boolean adopted, Specie specie, User user) {
         this.id = id;
         this.nickname = nickname;
         this.sex = sex;
         this.description = description;
+        this.size = size;
         this.registeredAt = registeredAt;
         this.adopted = adopted;
         this.specie = specie;
@@ -112,6 +115,14 @@ public class Pet implements Serializable {
 
     public void setSpecie(Specie specie) {
         this.specie = specie;
+    }
+
+    public PetSize getSize() {
+        return size;
+    }
+
+    public void setSize(PetSize size) {
+        this.size = size;
     }
 
     public User getUser() {

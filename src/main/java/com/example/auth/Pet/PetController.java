@@ -2,6 +2,9 @@ package com.example.auth.Pet;
 
 
 import com.example.auth.Pet.DTOs.RegisterPetDTO;
+import com.example.auth.Pet.Size.PetSize;
+import com.example.auth.Pet.Size.PetSizeRepository;
+import com.example.auth.Pet.Size.SizeName;
 import com.example.auth.Pet.Specie.Specie;
 import com.example.auth.Pet.Specie.SpecieName;
 import com.example.auth.Pet.Specie.SpecieRepository;
@@ -35,6 +38,9 @@ public class PetController {
     private SpecieRepository specieRepository;
 
     @Autowired
+    private PetSizeRepository sizeRepository;
+
+    @Autowired
     private UserService userService;
 
     @GetMapping
@@ -57,7 +63,9 @@ public class PetController {
 
         Specie specie = specieRepository.findByName(SpecieName.fromString(dto.specie()));
 
-        Pet pet = new Pet(null, dto.nickname(), dto.sex(), dto.description(),
+        PetSize size = sizeRepository.findBySizeName(SizeName.fromString(dto.size()));
+
+        Pet pet = new Pet(null, dto.nickname(), dto.sex(), dto.description(), size,
                 new Date(System.currentTimeMillis()), false, specie, user);
 
         petService.save(pet);
