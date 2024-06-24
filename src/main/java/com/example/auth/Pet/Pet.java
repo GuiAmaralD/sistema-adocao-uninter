@@ -1,21 +1,27 @@
 package com.example.auth.Pet;
 
 
+import com.example.auth.Pet.PetImages.PetImages;
 import com.example.auth.Pet.Size.PetSize;
 import com.example.auth.Pet.Specie.Specie;
 import com.example.auth.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -44,6 +50,10 @@ public class Pet implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<PetImages> petImages = new ArrayList<>();
 
     public Pet(){
 
@@ -131,6 +141,10 @@ public class Pet implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public List<PetImages> getPetImages() {
+        return petImages;
     }
 
     @Override
