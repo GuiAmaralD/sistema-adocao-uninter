@@ -1,9 +1,0 @@
-CREATE TABLE IF NOT EXISTS public.pet_images (
-    id SERIAL PRIMARY KEY,
-    path VARCHAR(255) NOT NULL,
-    file_name VARCHAR(255) NOT NULL,
-    mime_type VARCHAR(50) NOT NULL,
-    upload_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    pet_id BIGINT NOT NULL,
-    FOREIGN KEY (pet_id) REFERENCES Pet(id)
-);

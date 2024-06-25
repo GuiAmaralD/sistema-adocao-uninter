@@ -20,9 +20,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.sql.Date;
 import java.util.List;
@@ -58,7 +61,19 @@ public class PetController {
 
     @PostMapping
     public ResponseEntity<Pet> registerNewPet(@RequestBody @Valid RegisterPetDTO dto,
-                                              Principal principal){
+                                              @RequestParam("file") MultipartFile file,
+                                              Principal principal) throws IOException {
+
+        System.out.println("aqui");
+        if (file == null || file.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "imagem obrigatória");
+        }
+
+        String contentType = file.getContentType();
+        if (!"image/jpeg".equals(contentType) && !"image/png".equals(contentType)) {
+            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "A imagem deve ser do tipo JPEG ou PNG.");
+        }
+
         User user = (User) userService.findByEmail(principal.getName());
 
         Specie specie = specieRepository.findByName(SpecieName.fromString(dto.specie()));
@@ -66,9 +81,10 @@ public class PetController {
         PetSize size = sizeRepository.findBySizeName(SizeName.fromString(dto.size()));
 
         Pet pet = new Pet(null, dto.nickname(), dto.sex(), dto.description(), size,
-                new Date(System.currentTimeMillis()), false, specie, user);
+                new Date(System.currentTimeMillis()), false, specie, user, file.getBytes());
 
         petService.save(pet);
+        System.out.println("passou por aqui");
 
         return ResponseEntity.ok().build();
     }

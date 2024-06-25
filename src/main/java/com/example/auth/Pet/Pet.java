@@ -1,27 +1,23 @@
 package com.example.auth.Pet;
 
 
-import com.example.auth.Pet.PetImages.PetImages;
 import com.example.auth.Pet.Size.PetSize;
 import com.example.auth.Pet.Specie.Specie;
 import com.example.auth.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -51,15 +47,16 @@ public class Pet implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<PetImages> petImages = new ArrayList<>();
+    @Lob
+    @Column(name = "image")
+    private byte[] image;
+
 
     public Pet(){
 
     }
 
-    public Pet(Long id, String nickname, String sex, String description, PetSize size, Date registeredAt, boolean adopted, Specie specie, User user) {
+    public Pet(Long id, String nickname, String sex, String description, PetSize size, Date registeredAt, boolean adopted, Specie specie, User user, byte[] image) {
         this.id = id;
         this.nickname = nickname;
         this.sex = sex;
@@ -69,6 +66,7 @@ public class Pet implements Serializable {
         this.adopted = adopted;
         this.specie = specie;
         this.user = user;
+        this.image = image;
     }
 
     public Long getId() {
@@ -143,9 +141,14 @@ public class Pet implements Serializable {
         this.user = user;
     }
 
-    public List<PetImages> getPetImages() {
-        return petImages;
+    public byte[] getImage() {
+        return image;
     }
+
+    public void setImage(byte[] image) {
+        this.image = image;
+    }
+
 
     @Override
     public boolean equals(Object o) {
