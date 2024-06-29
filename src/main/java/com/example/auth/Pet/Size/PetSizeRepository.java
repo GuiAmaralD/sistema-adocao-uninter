@@ -5,6 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PetSizeRepository extends JpaRepository<PetSize, Long> {
-
-    PetSize findBySizeName(SizeName name);
+    PetSize findBySize(String name);
 }

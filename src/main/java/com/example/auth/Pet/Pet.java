@@ -18,6 +18,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
@@ -47,8 +48,8 @@ public class Pet implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Lob
-    @Column(name = "image")
+
+    @Column(name = "image", columnDefinition = "bytea")
     private byte[] image;
 
 
@@ -161,5 +162,20 @@ public class Pet implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(nickname, sex, description, specie);
+    }
+
+    @Override
+    public String toString() {
+        return "Pet{" +
+                "id=" + id +
+                ", nickname='" + nickname + '\'' +
+                ", sex='" + sex + '\'' +
+                ", description='" + description + '\'' +
+                ", registeredAt=" + registeredAt +
+                ", adopted=" + adopted +
+                ", specie=" + specie +
+                ", size=" + size +
+                ", user=" + user +
+                '}';
     }
 }

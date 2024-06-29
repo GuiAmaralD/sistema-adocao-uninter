@@ -14,13 +14,16 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
@@ -32,6 +35,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/pet")
+@CrossOrigin("*")
 public class PetController {
 
     @Autowired
@@ -59,12 +63,11 @@ public class PetController {
         return ResponseEntity.ok().body(pet);
     }
 
-    @PostMapping
-    public ResponseEntity<Pet> registerNewPet(@RequestBody @Valid RegisterPetDTO dto,
-                                              @RequestParam("file") MultipartFile file,
+    @PostMapping(consumes = "multipart/form-data")
+    public ResponseEntity<Pet> registerNewPet(@ModelAttribute @Valid RegisterPetDTO dto,
+                                              @RequestPart("file") MultipartFile file,
                                               Principal principal) throws IOException {
 
-        System.out.println("aqui");
         if (file == null || file.isEmpty()) {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "imagem obrigatória");
         }
@@ -74,17 +77,23 @@ public class PetController {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "A imagem deve ser do tipo JPEG ou PNG.");
         }
 
+        System.out.println(dto.specie());
+        System.out.println(dto.size());
+
         User user = (User) userService.findByEmail(principal.getName());
 
-        Specie specie = specieRepository.findByName(SpecieName.fromString(dto.specie()));
+        Specie specie = specieRepository.findByName(dto.specie().toLowerCase());
 
-        PetSize size = sizeRepository.findBySizeName(SizeName.fromString(dto.size()));
+        PetSize size = sizeRepository.findBySize(dto.size().toLowerCase());
+
+        System.out.println(file.getBytes());
+        System.out.println(file.getName());
 
         Pet pet = new Pet(null, dto.nickname(), dto.sex(), dto.description(), size,
                 new Date(System.currentTimeMillis()), false, specie, user, file.getBytes());
 
+        System.out.println(pet);
         petService.save(pet);
-        System.out.println("passou por aqui");
 
         return ResponseEntity.ok().build();
     }

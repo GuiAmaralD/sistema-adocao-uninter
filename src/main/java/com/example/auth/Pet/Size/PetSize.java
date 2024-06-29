@@ -2,8 +2,6 @@ package com.example.auth.Pet.Size;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,21 +16,21 @@ public class PetSize implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Enumerated(EnumType.STRING)
+
     @Column(name = "size")
-    private SizeName sizeName;
+    private String size;
 
     public PetSize(){
 
     }
 
-    public PetSize(Long id, SizeName name) {
+    public PetSize(Long id, String name) {
         this.id = id;
-        this.sizeName = name;
+        this.size = name;
     }
 
-    public PetSize(SizeName name){
-        this.sizeName = name;
+    public PetSize(String name){
+        this.size = name;
     }
 
     public Long getId() {
@@ -43,12 +41,12 @@ public class PetSize implements Serializable {
         this.id = id;
     }
 
-    public SizeName getName() {
-        return sizeName;
+    public String getName() {
+        return size;
     }
 
-    public void setName(SizeName name) {
-        this.sizeName = name;
+    public void setName(String name) {
+        this.size = name;
     }
 
     @Override

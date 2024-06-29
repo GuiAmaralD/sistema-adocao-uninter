@@ -2,7 +2,6 @@ package com.example.auth.infra.security;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
@@ -17,9 +16,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
         registry.addMapping("/**")
                 .allowedOriginPatterns("*")
-                .allowedMethods(HttpMethod.GET.name(), HttpMethod.POST.name(), HttpMethod.OPTIONS.name(), HttpMethod.DELETE.name(),
-                        HttpMethod.PUT.name())
-                .allowedOrigins("https://adotaconquista.com.br/", "http://adotaconquista.com.br", "adotaconquista.com.br");
+                .allowedMethods("PUT", "DELETE", "POST", "GET");
 
     }
 

@@ -1,6 +1,7 @@
 package com.example.auth.Pet.Specie;
 
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -20,19 +21,20 @@ public class Specie implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Enumerated(EnumType.STRING)
-    private SpecieName name;
+
+    @Column(name = "name")
+    private String name;
 
     public Specie(){
 
     }
 
-    public Specie(Long id, SpecieName name) {
+    public Specie(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Specie(SpecieName name){
+    public Specie(String name){
         this.name = name;
     }
 
@@ -44,11 +46,11 @@ public class Specie implements Serializable {
         this.id = id;
     }
 
-    public SpecieName getName() {
+    public String getName() {
         return name;
     }
 
-    public void setName(SpecieName name) {
+    public void setName(String name) {
         this.name = name;
     }
 
