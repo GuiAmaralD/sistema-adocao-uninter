@@ -7,10 +7,22 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.Principal;
+import java.util.Base64;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class PetService {
@@ -22,7 +34,8 @@ public class PetService {
     private UserService userService;
 
     public List<Pet> findAllByAdoptedFalse(){
-        return petRepository.findAllByAdoptedFalse();
+        List<Pet> pets = petRepository.findAllByAdoptedFalse();
+        return pets;
     }
 
     public Pet findById(Long id){
@@ -46,4 +59,28 @@ public class PetService {
         }
         return false;
     }
+
+    public String saveImage(MultipartFile imageFile, Long petId) throws IOException {
+        // Diretório onde as imagens serão armazenadas (configurado no seu ambiente)
+        String uploadDir = "src/main/resources/uploads/petimages";
+
+        // Gerar nome de arquivo único
+        String fileName = "pet_image_" + petId + "_" + UUID.randomUUID().toString() + ".jpg";
+
+        // Construir o caminho completo do arquivo
+        Path filePath = Paths.get(uploadDir, fileName);
+
+        // Certificar-se de que o diretório pai existe
+        Files.createDirectories(filePath.getParent());
+
+        // Salvar o arquivo no sistema de arquivos
+        try (InputStream inputStream = imageFile.getInputStream()) {
+            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
+        }
+
+        // Retornar o caminho relativo do arquivo
+        return Paths.get(fileName).toString();
+    }
+
+
 }

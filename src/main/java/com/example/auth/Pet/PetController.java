@@ -52,8 +52,9 @@ public class PetController {
 
     @GetMapping
     public ResponseEntity<List<Pet>> findAllByAdoptedFalse(){
-        List<Pet> lista = petService.findAllByAdoptedFalse();
-        return ResponseEntity.ok().body(lista);
+
+            List<Pet> lista = petService.findAllByAdoptedFalse();
+            return ResponseEntity.ok().body(lista);
     }
 
     @GetMapping("/{id}")
@@ -77,23 +78,24 @@ public class PetController {
             throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "A imagem deve ser do tipo JPEG ou PNG.");
         }
 
-        System.out.println(dto.specie());
-        System.out.println(dto.size());
-
         User user = (User) userService.findByEmail(principal.getName());
 
         Specie specie = specieRepository.findByName(dto.specie().toLowerCase());
 
         PetSize size = sizeRepository.findBySize(dto.size().toLowerCase());
 
-        System.out.println(file.getBytes());
-        System.out.println(file.getName());
-
         Pet pet = new Pet(null, dto.nickname(), dto.sex(), dto.description(), size,
-                new Date(System.currentTimeMillis()), false, specie, user, file.getBytes());
+                new Date(System.currentTimeMillis()), false, specie, user);
 
-        System.out.println(pet);
+        // Salva a entidade Pet para obter o ID
         petService.save(pet);
+
+        // Salva a imagem utilizando o ID do Pet
+        String imagePath = petService.saveImage(file, pet.getId());
+
+        // Você pode querer atribuir o caminho da imagem de volta à entidade Pet, se necessário
+        pet.setImagePath(imagePath);
+        petService.save(pet); // Atualiza a entidade Pet com o caminho da imagem, se necessário
 
         return ResponseEntity.ok().build();
     }

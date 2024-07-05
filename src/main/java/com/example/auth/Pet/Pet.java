@@ -5,6 +5,7 @@ import com.example.auth.Pet.Size.PetSize;
 import com.example.auth.Pet.Specie.Specie;
 import com.example.auth.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,11 +15,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.io.Serializable;
 import java.sql.Date;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Objects;
 
 @Entity
@@ -48,16 +51,15 @@ public class Pet implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
 
-
-    @Column(name = "image", columnDefinition = "bytea")
-    private byte[] image;
+    @Column(name = "imagepath")
+    private String imagePath;
 
 
     public Pet(){
 
     }
 
-    public Pet(Long id, String nickname, String sex, String description, PetSize size, Date registeredAt, boolean adopted, Specie specie, User user, byte[] image) {
+    public Pet(Long id, String nickname, String sex, String description, PetSize size, Date registeredAt, boolean adopted, Specie specie, User user) {
         this.id = id;
         this.nickname = nickname;
         this.sex = sex;
@@ -67,7 +69,19 @@ public class Pet implements Serializable {
         this.adopted = adopted;
         this.specie = specie;
         this.user = user;
-        this.image = image;
+    }
+
+    public Pet(Long id, String nickname, String sex, String description, PetSize size, Date registeredAt, boolean adopted, Specie specie, User user, String imagePath) {
+        this.id = id;
+        this.nickname = nickname;
+        this.sex = sex;
+        this.description = description;
+        this.size = size;
+        this.registeredAt = registeredAt;
+        this.adopted = adopted;
+        this.specie = specie;
+        this.user = user;
+        this.imagePath = imagePath;
     }
 
     public Long getId() {
@@ -142,14 +156,13 @@ public class Pet implements Serializable {
         this.user = user;
     }
 
-    public byte[] getImage() {
-        return image;
+    public String getImagePath() {
+        return imagePath;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
-
 
     @Override
     public boolean equals(Object o) {
