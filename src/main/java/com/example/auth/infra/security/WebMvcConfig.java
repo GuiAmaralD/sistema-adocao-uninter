@@ -30,4 +30,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
     }
 
+    @Bean
+    public WebSecurityCustomizer ignoringCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/static/**", "/images/**");
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("classpath:/static/");
+    }
 }
