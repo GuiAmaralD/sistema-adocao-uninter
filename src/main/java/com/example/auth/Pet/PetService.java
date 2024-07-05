@@ -62,7 +62,7 @@ public class PetService {
 
     public String saveImage(MultipartFile imageFile, Long petId) throws IOException {
         // Diretório onde as imagens serão armazenadas (configurado no seu ambiente)
-        String uploadDir = "src/main/resources/uploads/petimages";
+        String uploadDir = "src/main/resources/static/images";
 
         // Gerar nome de arquivo único
         String fileName = "pet_image_" + petId + "_" + UUID.randomUUID().toString() + ".jpg";
