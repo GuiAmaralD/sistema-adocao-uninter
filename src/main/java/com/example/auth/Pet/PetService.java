@@ -1,6 +1,7 @@
 package com.example.auth.Pet;
 
 
+import com.example.auth.Pet.DTOs.SendPetToClientDTO;
 import com.example.auth.user.User;
 import com.example.auth.user.services.UserService;
 import jakarta.transaction.Transactional;
@@ -62,7 +63,7 @@ public class PetService {
 
     public String saveImage(MultipartFile imageFile, Long petId) throws IOException {
         // Diretório onde as imagens serão armazenadas (configurado no seu ambiente)
-        String uploadDir = "src/main/resources/static/images";
+        String uploadDir = "src/main/resources/static/images/";
 
         // Gerar nome de arquivo único
         String fileName = "pet_image_" + petId + "_" + UUID.randomUUID().toString() + ".jpg";
@@ -80,6 +81,31 @@ public class PetService {
 
         // Retornar o caminho relativo do arquivo
         return Paths.get(fileName).toString();
+    }
+
+    public SendPetToClientDTO toSendPetToClientDTO(Pet pet) {
+        String base64Image = "";
+        String basePath = "src/main/resources/static/images/";
+        if (pet.getImagePath() != null) {
+            try {
+                byte[] imageBytes = Files.readAllBytes(Paths.get(basePath + pet.getImagePath()));
+                base64Image = Base64.getEncoder().encodeToString(imageBytes);
+            } catch (IOException e) {
+                e.printStackTrace(); // Trate a exceção de forma adequada
+            }
+        }
+        return new SendPetToClientDTO(
+                pet.getId(),
+                pet.getNickname(),
+                pet.getSex(),
+                pet.getSize(),
+                pet.getSpecie(),
+                pet.getDescription(),
+                pet.isAdopted(),
+                pet.getRegisteredAt(),
+                base64Image,
+                pet.getUser()
+        );
     }
 
 

@@ -2,6 +2,7 @@ package com.example.auth.Pet;
 
 
 import com.example.auth.Pet.DTOs.RegisterPetDTO;
+import com.example.auth.Pet.DTOs.SendPetToClientDTO;
 import com.example.auth.Pet.Size.PetSize;
 import com.example.auth.Pet.Size.PetSizeRepository;
 import com.example.auth.Pet.Size.SizeName;
@@ -29,9 +30,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.Principal;
 import java.sql.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/pet")
@@ -51,17 +55,21 @@ public class PetController {
     private UserService userService;
 
     @GetMapping
-    public ResponseEntity<List<Pet>> findAllByAdoptedFalse(){
+    public ResponseEntity<List<SendPetToClientDTO>> findAllByAdoptedFalse() {
+        List<Pet> pets = petService.findAllByAdoptedFalse();
+        List<SendPetToClientDTO> dtos = pets.stream()
+                .map(petService::toSendPetToClientDTO) // Utilize o método de mapeamento que criamos antes
+                .collect(Collectors.toList());
 
-            List<Pet> lista = petService.findAllByAdoptedFalse();
-            return ResponseEntity.ok().body(lista);
+        return ResponseEntity.ok().body(dtos);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Pet> findPetById(@PathVariable Long id){
+    public ResponseEntity<SendPetToClientDTO> getPet(@PathVariable Long id) {
         Pet pet = petService.findById(id);
 
-        return ResponseEntity.ok().body(pet);
+        SendPetToClientDTO dto = petService.toSendPetToClientDTO(pet);
+        return ResponseEntity.ok(dto);
     }
 
     @PostMapping(consumes = "multipart/form-data")
