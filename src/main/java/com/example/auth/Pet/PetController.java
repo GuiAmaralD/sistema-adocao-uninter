@@ -64,6 +64,14 @@ public class PetController {
         return ResponseEntity.ok().body(dtos);
     }
 
+    @GetMapping("/filter")
+    public List<Pet> getPetsByCriteria(
+            @RequestParam(required = false) String specie,
+            @RequestParam(required = false) String sex,
+            @RequestParam(required = false) String size) {
+        return petService.findPetsByCriteria(specie, sex, size);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<SendPetToClientDTO> getPet(@PathVariable Long id) {
         Pet pet = petService.findById(id);
