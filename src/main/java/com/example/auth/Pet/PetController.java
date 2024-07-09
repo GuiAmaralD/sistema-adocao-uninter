@@ -120,4 +120,9 @@ public class PetController {
         }
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/cron")
+    public String cronJobMethod(){
+        return "cron";
+    }
 }
