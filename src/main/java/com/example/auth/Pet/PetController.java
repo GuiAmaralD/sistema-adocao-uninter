@@ -131,6 +131,6 @@ public class PetController {
 
     @GetMapping("/cron")
     public String cronJobMethod(){
-        return "cron";
+        return "cronn";
     }
 }
