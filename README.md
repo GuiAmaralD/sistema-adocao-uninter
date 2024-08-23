@@ -1,6 +1,6 @@
 # Sistema de Adoção de Animais - UNINTER
 
-Este projeto é um sistema de adoção de animais desenvolvido como parte de uma atividade extensionista da UNINTER. Ele utiliza Spring Boot e PostgreSQL para gerenciar informações de animais disponíveis para adoção.
+Este projeto é um sistema de adoção de animais desenvolvido como parte de uma atividade extensionista da UNINTER. Ele utiliza Spring Boot e PostgreSQL para gerenciar informações de animais disponíveis para adoção, com cadastro de usuários e autenticação via JWT.
 
 ## Funcionalidades
 
@@ -10,9 +10,8 @@ Este projeto é um sistema de adoção de animais desenvolvido como parte de uma
 - Armazenamento seguro de imagens.
 
 ## Tecnologias
-- **Backend**: Java, Spring Boot
+- **Backend**: Java, Spring Boot, Spring Security, Spring Data JPA
 - **Banco de Dados**: PostgreSQL
-- **Frontend**: HTML, CSS, JavaScript
 - **Containerização**: Docker
 
 ## Instalação
