@@ -42,17 +42,17 @@ import java.util.stream.Collectors;
 @CrossOrigin("*")
 public class PetController {
 
-    @Autowired
-    private PetService petService;
+    private final PetService petService;
+    private final SpecieRepository specieRepository;
+    private final PetSizeRepository sizeRepository;
+    private final UserService userService;
 
-    @Autowired
-    private SpecieRepository specieRepository;
-
-    @Autowired
-    private PetSizeRepository sizeRepository;
-
-    @Autowired
-    private UserService userService;
+    public PetController(PetService petService, SpecieRepository specieRepository, PetSizeRepository sizeRepository, UserService userService) {
+        this.petService = petService;
+        this.specieRepository = specieRepository;
+        this.sizeRepository = sizeRepository;
+        this.userService = userService;
+    }
 
     @GetMapping
     public ResponseEntity<List<SendPetToClientDTO>> findAllByAdoptedFalse() {

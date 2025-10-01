@@ -29,11 +29,13 @@ import java.util.UUID;
 @Service
 public class PetService {
 
-    @Autowired
-    private PetRepository petRepository;
+    private final PetRepository petRepository;
+    private final UserService userService;
 
-    @Autowired
-    private UserService userService;
+    public PetService(PetRepository petRepository, UserService userService) {
+        this.petRepository = petRepository;
+        this.userService = userService;
+    }
 
     public List<Pet> findAllByAdoptedFalse(){
         List<Pet> pets = petRepository.findAllByAdoptedFalse();
