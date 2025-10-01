@@ -5,7 +5,6 @@ import com.example.auth.user.DTOs.UpdateDTO;
 import com.example.auth.user.User;
 import com.example.auth.user.UserRepository;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -17,12 +16,9 @@ import java.util.Objects;
 @Service
 public class UserService {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    private BCryptPasswordEncoder passwordEncoder;
-
-
-    @Autowired
     public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;

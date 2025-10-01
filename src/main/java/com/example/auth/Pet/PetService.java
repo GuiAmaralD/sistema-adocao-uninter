@@ -6,7 +6,6 @@ import com.example.auth.user.User;
 import com.example.auth.user.services.UserService;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

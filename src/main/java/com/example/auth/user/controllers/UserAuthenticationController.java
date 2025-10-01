@@ -7,7 +7,6 @@ import com.example.auth.user.User;
 import com.example.auth.user.UserRole;
 import com.example.auth.user.services.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -31,12 +30,16 @@ import java.util.Map;
 @RequestMapping("auth")
 @CrossOrigin("*")
 public class UserAuthenticationController {
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private TokenService tokenService;
+
+    private final AuthenticationManager authenticationManager;
+    private final UserService userService;
+    private final TokenService tokenService;
+
+    public UserAuthenticationController(AuthenticationManager authenticationManager, UserService userService, TokenService tokenService) {
+        this.authenticationManager = authenticationManager;
+        this.userService = userService;
+        this.tokenService = tokenService;
+    }
 
     @PostMapping("/login")
     public ResponseEntity<Map<String, String>> login(@RequestBody @Valid AuthenticationDTO data){

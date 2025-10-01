@@ -6,7 +6,6 @@ import com.example.auth.user.DTOs.UpdateDTO;
 import com.example.auth.user.User;
 import com.example.auth.user.services.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,9 +22,11 @@ import java.security.Principal;
 @CrossOrigin("*")
 public class UserAccountController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
 
+    public UserAccountController(UserService userService){
+        this.userService = userService;
+    }
 
 
     @GetMapping("/me")
