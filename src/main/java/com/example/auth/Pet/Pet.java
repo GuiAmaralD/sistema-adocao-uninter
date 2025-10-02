@@ -1,18 +1,13 @@
 package com.example.auth.Pet;
 
 
-import com.example.auth.Pet.Size.PetSize;
-import com.example.auth.Pet.Specie.Specie;
+import com.example.auth.Pet.enums.Size;
+import com.example.auth.Pet.enums.Specie;
 import com.example.auth.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.io.Serializable;
@@ -36,11 +31,11 @@ public class Pet implements Serializable {
 
     private boolean adopted;
 
-    @ManyToOne
+    @Enumerated(EnumType.STRING)
     private Specie specie;
 
-    @ManyToOne
-    private PetSize size;
+    @Enumerated(EnumType.STRING)
+    private Size size;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -54,7 +49,7 @@ public class Pet implements Serializable {
 
     }
 
-    public Pet(Long id, String nickname, String sex, String description, PetSize size, Date registeredAt, boolean adopted, Specie specie, User user) {
+    public Pet(Long id, String nickname, String sex, String description, Size size, Date registeredAt, boolean adopted, Specie specie, User user) {
         this.id = id;
         this.nickname = nickname;
         this.sex = sex;
@@ -66,7 +61,7 @@ public class Pet implements Serializable {
         this.user = user;
     }
 
-    public Pet(Long id, String nickname, String sex, String description, PetSize size, Date registeredAt, boolean adopted, Specie specie, User user, String imagePath) {
+    public Pet(Long id, String nickname, String sex, String description, Size size, Date registeredAt, boolean adopted, Specie specie, User user, String imagePath) {
         this.id = id;
         this.nickname = nickname;
         this.sex = sex;
@@ -78,6 +73,7 @@ public class Pet implements Serializable {
         this.user = user;
         this.imagePath = imagePath;
     }
+
 
     public Long getId() {
         return id;
@@ -135,11 +131,11 @@ public class Pet implements Serializable {
         this.specie = specie;
     }
 
-    public PetSize getSize() {
+    public Size getSize() {
         return size;
     }
 
-    public void setSize(PetSize size) {
+    public void setSize(Size size) {
         this.size = size;
     }
 

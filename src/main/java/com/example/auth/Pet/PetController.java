@@ -3,25 +3,12 @@ package com.example.auth.Pet;
 
 import com.example.auth.Pet.DTOs.RegisterPetDTO;
 import com.example.auth.Pet.DTOs.SendPetToClientDTO;
-import com.example.auth.Pet.Size.PetSize;
-import com.example.auth.Pet.Size.PetSizeRepository;
-import com.example.auth.Pet.Specie.Specie;
-import com.example.auth.Pet.Specie.SpecieRepository;
 import com.example.auth.user.User;
 import com.example.auth.user.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -37,14 +24,10 @@ import java.util.stream.Collectors;
 public class PetController {
 
     private final PetService petService;
-    private final SpecieRepository specieRepository;
-    private final PetSizeRepository sizeRepository;
     private final UserService userService;
 
-    public PetController(PetService petService, SpecieRepository specieRepository, PetSizeRepository sizeRepository, UserService userService) {
+    public PetController(PetService petService, UserService userService) {
         this.petService = petService;
-        this.specieRepository = specieRepository;
-        this.sizeRepository = sizeRepository;
         this.userService = userService;
     }
 
@@ -74,38 +57,16 @@ public class PetController {
         return ResponseEntity.ok(dto);
     }
 
-    @PostMapping(consumes = "multipart/form-data")
-    public ResponseEntity<Pet> registerNewPet(@ModelAttribute @Valid RegisterPetDTO dto,
-                                              @RequestPart("file") MultipartFile file,
+    @PostMapping
+    public ResponseEntity<Pet> registerNewPet(@RequestBody @Valid RegisterPetDTO dto,
                                               Principal principal) throws IOException {
-
-        if (file == null || file.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "imagem obrigatória");
-        }
-
-        String contentType = file.getContentType();
-        if (!"image/jpeg".equals(contentType) && !"image/png".equals(contentType)) {
-            throw new ResponseStatusException(HttpStatus.UNPROCESSABLE_ENTITY, "A imagem deve ser do tipo JPEG ou PNG.");
-        }
 
         User user = (User) userService.findByEmail(principal.getName());
 
-        Specie specie = specieRepository.findByName(dto.specie().toLowerCase());
+        Pet pet = new Pet(null, dto.nickname(), dto.sex(), dto.description(), dto.size(),
+                new Date(System.currentTimeMillis()), false, dto.specie(), user);
 
-        PetSize size = sizeRepository.findBySize(dto.size().toLowerCase());
-
-        Pet pet = new Pet(null, dto.nickname(), dto.sex(), dto.description(), size,
-                new Date(System.currentTimeMillis()), false, specie, user);
-
-        // Salva a entidade Pet para obter o ID
         petService.save(pet);
-
-        // Salva a imagem utilizando o ID do Pet
-        String imagePath = petService.saveImage(file, pet.getId());
-
-        // Você pode querer atribuir o caminho da imagem de volta à entidade Pet, se necessário
-        pet.setImagePath(imagePath);
-        petService.save(pet); // Atualiza a entidade Pet com o caminho da imagem, se necessário
 
         return ResponseEntity.ok().build();
     }

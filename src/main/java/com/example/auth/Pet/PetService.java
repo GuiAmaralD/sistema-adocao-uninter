@@ -79,39 +79,9 @@ public class PetService {
         return false;
     }
 
-    public String saveImage(MultipartFile imageFile, Long petId) throws IOException {
-        // Diretório onde as imagens serão armazenadas (configurado no seu ambiente)
-        String uploadDir = "src/main/resources/static/images/";
-
-        // Gerar nome de arquivo único
-        String fileName = "pet_image_" + petId + "_" + UUID.randomUUID().toString() + ".jpg";
-
-        // Construir o caminho completo do arquivo
-        Path filePath = Paths.get(uploadDir, fileName);
-
-        // Certificar-se de que o diretório pai existe
-        Files.createDirectories(filePath.getParent());
-
-        // Salvar o arquivo no sistema de arquivos
-        try (InputStream inputStream = imageFile.getInputStream()) {
-            Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
-        }
-
-        // Retornar o caminho relativo do arquivo
-        return Paths.get(fileName).toString();
-    }
 
     public SendPetToClientDTO toSendPetToClientDTO(Pet pet) {
-        String base64Image = "";
-        String basePath = "src/main/resources/static/images/";
-        if (pet.getImagePath() != null) {
-            try {
-                byte[] imageBytes = Files.readAllBytes(Paths.get(basePath + pet.getImagePath()));
-                base64Image = Base64.getEncoder().encodeToString(imageBytes);
-            } catch (IOException e) {
-                e.printStackTrace(); // Trate a exceção de forma adequada
-            }
-        }
+
         return new SendPetToClientDTO(
                 pet.getId(),
                 pet.getNickname(),
@@ -121,7 +91,6 @@ public class PetService {
                 pet.getDescription(),
                 pet.isAdopted(),
                 pet.getRegisteredAt(),
-                base64Image,
                 pet.getUser()
         );
     }
