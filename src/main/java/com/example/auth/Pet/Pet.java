@@ -1,13 +1,12 @@
 package com.example.auth.Pet;
 
 
+import com.example.auth.Pet.enums.Sex;
 import com.example.auth.Pet.enums.Size;
 import com.example.auth.Pet.enums.Specie;
 import com.example.auth.user.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.io.Serializable;
@@ -22,7 +21,6 @@ public class Pet implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nickname;
-    private String sex;
     private String description;
 
     @CreatedDate
@@ -37,6 +35,9 @@ public class Pet implements Serializable {
     @Enumerated(EnumType.STRING)
     private Size size;
 
+    @Enumerated(EnumType.STRING)
+    private Sex sex;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -49,7 +50,7 @@ public class Pet implements Serializable {
 
     }
 
-    public Pet(Long id, String nickname, String sex, String description, Size size, Date registeredAt, boolean adopted, Specie specie, User user) {
+    public Pet(Long id, String nickname, Sex sex, String description, Size size, Date registeredAt, boolean adopted, Specie specie, User user) {
         this.id = id;
         this.nickname = nickname;
         this.sex = sex;
@@ -61,7 +62,7 @@ public class Pet implements Serializable {
         this.user = user;
     }
 
-    public Pet(Long id, String nickname, String sex, String description, Size size, Date registeredAt, boolean adopted, Specie specie, User user, String imagePath) {
+    public Pet(Long id, String nickname, Sex sex, String description, Size size, Date registeredAt, boolean adopted, Specie specie, User user, String imagePath) {
         this.id = id;
         this.nickname = nickname;
         this.sex = sex;
@@ -91,11 +92,11 @@ public class Pet implements Serializable {
         this.nickname = nickname;
     }
 
-    public String getSex() {
+    public Sex getSex() {
         return sex;
     }
 
-    public void setSex(String sex) {
+    public void setSex(Sex sex) {
         this.sex = sex;
     }
 

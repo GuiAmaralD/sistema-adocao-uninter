@@ -5,11 +5,11 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @JsonFormat(shape = JsonFormat.Shape.STRING)
-public enum Size {
-    SMALL, MEDIUM, BIG;
+public enum Sex {
+    MALE, FEMALE;
 
     @JsonCreator
-    public static Size fromString(String value) {
-        return value == null ? null : Size.valueOf(value.toUpperCase());
+    public static Sex fromString(String value) {
+        return value == null ? null : Sex.valueOf(value.toUpperCase());
     }
 }
