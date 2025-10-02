@@ -6,10 +6,9 @@ import com.example.auth.Pet.enums.Size;
 import com.example.auth.Pet.enums.Specie;
 import com.example.auth.user.User;
 
-import java.util.Date;
 import java.util.List;
 
-public record SendPetToClientDTO(
+public record PetResponseDTO(
         Long id,
         String nickname,
         Sex sex,

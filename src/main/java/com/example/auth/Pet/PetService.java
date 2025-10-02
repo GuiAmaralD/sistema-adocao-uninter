@@ -1,8 +1,7 @@
 package com.example.auth.Pet;
 
-
 import com.example.auth.Pet.DTOs.RegisterPetDTO;
-import com.example.auth.Pet.DTOs.SendPetToClientDTO;
+import com.example.auth.Pet.DTOs.PetResponseDTO;
 import com.example.auth.Pet.enums.Sex;
 import com.example.auth.Pet.enums.Size;
 import com.example.auth.Pet.enums.Specie;
@@ -13,17 +12,18 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
 
 import java.io.IOException;
 import java.security.Principal;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-
+import java.util.Set;
 
 @Service
 public class PetService {
@@ -81,7 +81,7 @@ public class PetService {
         return petRepository.save(pet);
     }
 
-    public SendPetToClientDTO registerNewPet(RegisterPetDTO dto, List<MultipartFile> images, User user) throws IOException {
+    public PetResponseDTO registerNewPet(RegisterPetDTO dto, List<MultipartFile> images, User user) throws IOException {
         Pet pet = new Pet(null,
                 dto.nickname(),
                 dto.sex(),
@@ -97,7 +97,7 @@ public class PetService {
 
         petRepository.save(pet);
 
-        return new SendPetToClientDTO(
+        return new PetResponseDTO(
                 pet.getId(),
                 pet.getNickname(),
                 pet.getSex(),
@@ -115,10 +115,17 @@ public class PetService {
             if (images.size() > 4)
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "each pet has a limit of 4 images");
 
+            Set<String> hashes = new HashSet<>();
+
             for (MultipartFile image : images) {
                 if (image.getSize() > 10 * 1024 * 1024)
                     throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                             "image file " + image.getOriginalFilename() + " is too big");
+                String hash = DigestUtils.md5DigestAsHex(image.getBytes());
+                if (!hashes.add(hash)) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "duplicate file detected: " + image.getOriginalFilename());
+                }
 
                 String url = supabaseStorageService.uploadFile("pet-images", image);
                 imageUrls.add(url);
@@ -139,9 +146,9 @@ public class PetService {
     }
 
 
-    public SendPetToClientDTO toSendPetToClientDTO(Pet pet) {
+    public PetResponseDTO toSendPetToClientDTO(Pet pet) {
 
-        return new SendPetToClientDTO(
+        return new PetResponseDTO(
                 pet.getId(),
                 pet.getNickname(),
                 pet.getSex(),

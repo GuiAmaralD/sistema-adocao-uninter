@@ -2,7 +2,7 @@ package com.example.auth.Pet;
 
 
 import com.example.auth.Pet.DTOs.RegisterPetDTO;
-import com.example.auth.Pet.DTOs.SendPetToClientDTO;
+import com.example.auth.Pet.DTOs.PetResponseDTO;
 import com.example.auth.user.User;
 import com.example.auth.user.services.UserService;
 import jakarta.validation.Valid;
@@ -34,9 +34,9 @@ public class PetController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SendPetToClientDTO>> findAllByAdoptedFalse() {
+    public ResponseEntity<List<PetResponseDTO>> findAllByAdoptedFalse() {
         List<Pet> pets = petService.findAllByAdoptedFalse();
-        List<SendPetToClientDTO> dtos = pets.stream()
+        List<PetResponseDTO> dtos = pets.stream()
                 .map(petService::toSendPetToClientDTO)
                 .collect(Collectors.toList());
 
@@ -52,21 +52,21 @@ public class PetController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SendPetToClientDTO> getPet(@PathVariable Long id) {
+    public ResponseEntity<PetResponseDTO> getPet(@PathVariable Long id) {
         Pet pet = petService.findById(id);
 
-        SendPetToClientDTO dto = petService.toSendPetToClientDTO(pet);
+        PetResponseDTO dto = petService.toSendPetToClientDTO(pet);
         return ResponseEntity.ok(dto);
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<SendPetToClientDTO> registerNewPet(
+    public ResponseEntity<PetResponseDTO> registerNewPet(
             @RequestPart("pet") @Valid RegisterPetDTO dto,
             @RequestPart(value = "images") List<MultipartFile> images,
             Principal principal) throws IOException {
 
         User user = (User) userService.findByEmail(principal.getName());
-        SendPetToClientDTO response = petService.registerNewPet(dto, images, user);
+        PetResponseDTO response = petService.registerNewPet(dto, images, user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
