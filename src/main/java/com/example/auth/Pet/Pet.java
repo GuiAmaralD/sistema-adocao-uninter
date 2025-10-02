@@ -11,6 +11,8 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -42,8 +44,8 @@ public class Pet implements Serializable {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "imagepath")
-    private String imagePath;
+    @ElementCollection
+    private List<String> imageUrls = new ArrayList<>();
 
 
     public Pet(){
@@ -62,7 +64,7 @@ public class Pet implements Serializable {
         this.user = user;
     }
 
-    public Pet(Long id, String nickname, Sex sex, String description, Size size, Date registeredAt, boolean adopted, Specie specie, User user, String imagePath) {
+    public Pet(Long id, String nickname, Sex sex, String description, Size size, Date registeredAt, boolean adopted, Specie specie, User user, List<String> imageUrls) {
         this.id = id;
         this.nickname = nickname;
         this.sex = sex;
@@ -72,7 +74,7 @@ public class Pet implements Serializable {
         this.adopted = adopted;
         this.specie = specie;
         this.user = user;
-        this.imagePath = imagePath;
+        this.imageUrls = imageUrls;
     }
 
 
@@ -148,12 +150,12 @@ public class Pet implements Serializable {
         this.user = user;
     }
 
-    public String getImagePath() {
-        return imagePath;
+    public List<String> getImageUrls() {
+        return imageUrls;
     }
 
-    public void setImagePath(String imagePath) {
-        this.imagePath = imagePath;
+    public void setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
     }
 
     @Override

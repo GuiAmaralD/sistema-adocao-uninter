@@ -7,6 +7,7 @@ import com.example.auth.Pet.enums.Specie;
 import com.example.auth.user.User;
 
 import java.util.Date;
+import java.util.List;
 
 public record SendPetToClientDTO(
         Long id,
@@ -15,7 +16,6 @@ public record SendPetToClientDTO(
         Size size,
         Specie specie,
         String description,
-        boolean adopted,
-        Date registeredAt,
-        User user
+        User user,
+        List<String> imagePaths
 ){}

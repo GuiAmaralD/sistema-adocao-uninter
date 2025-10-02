@@ -7,6 +7,7 @@ import com.example.auth.user.User;
 import com.example.auth.user.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,7 +15,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.sql.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,17 +25,19 @@ public class PetController {
 
     private final PetService petService;
     private final UserService userService;
+    private final SupabaseStorageService supabaseStorageService;
 
-    public PetController(PetService petService, UserService userService) {
+    public PetController(PetService petService, UserService userService, SupabaseStorageService supabaseStorageService) {
         this.petService = petService;
         this.userService = userService;
+        this.supabaseStorageService = supabaseStorageService;
     }
 
     @GetMapping
     public ResponseEntity<List<SendPetToClientDTO>> findAllByAdoptedFalse() {
         List<Pet> pets = petService.findAllByAdoptedFalse();
         List<SendPetToClientDTO> dtos = pets.stream()
-                .map(petService::toSendPetToClientDTO) // Utilize o método de mapeamento que criamos antes
+                .map(petService::toSendPetToClientDTO)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok().body(dtos);
@@ -57,18 +59,16 @@ public class PetController {
         return ResponseEntity.ok(dto);
     }
 
-    @PostMapping
-    public ResponseEntity<Pet> registerNewPet(@RequestBody @Valid RegisterPetDTO dto,
-                                              Principal principal) throws IOException {
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<SendPetToClientDTO> registerNewPet(
+            @RequestPart("pet") @Valid RegisterPetDTO dto,
+            @RequestPart(value = "images") List<MultipartFile> images,
+            Principal principal) throws IOException {
 
         User user = (User) userService.findByEmail(principal.getName());
+        SendPetToClientDTO response = petService.registerNewPet(dto, images, user);
 
-        Pet pet = new Pet(null, dto.nickname(), dto.sex(), dto.description(), dto.size(),
-                new Date(System.currentTimeMillis()), false, dto.specie(), user);
-
-        petService.save(pet);
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PutMapping("/{id}/adopted")
@@ -82,10 +82,5 @@ public class PetController {
                     "You can only update your pets data");
         }
         return ResponseEntity.ok().build();
-    }
-
-    @GetMapping("/cron")
-    public String cronJobMethod(){
-        return "cronn";
     }
 }

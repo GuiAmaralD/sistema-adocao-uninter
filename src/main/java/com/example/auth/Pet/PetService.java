@@ -1,6 +1,7 @@
 package com.example.auth.Pet;
 
 
+import com.example.auth.Pet.DTOs.RegisterPetDTO;
 import com.example.auth.Pet.DTOs.SendPetToClientDTO;
 import com.example.auth.Pet.enums.Sex;
 import com.example.auth.Pet.enums.Size;
@@ -13,10 +14,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 
+import java.io.IOException;
 import java.security.Principal;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +30,12 @@ public class PetService {
 
     private final PetRepository petRepository;
     private final UserService userService;
+    private final SupabaseStorageService supabaseStorageService;
 
-    public PetService(PetRepository petRepository, UserService userService) {
+    public PetService(PetRepository petRepository, UserService userService, SupabaseStorageService supabaseStorageService) {
         this.petRepository = petRepository;
         this.userService = userService;
+        this.supabaseStorageService = supabaseStorageService;
     }
 
     public List<Pet> findAllByAdoptedFalse(){
@@ -75,6 +81,52 @@ public class PetService {
         return petRepository.save(pet);
     }
 
+    public SendPetToClientDTO registerNewPet(RegisterPetDTO dto, List<MultipartFile> images, User user) throws IOException {
+        Pet pet = new Pet(null,
+                dto.nickname(),
+                dto.sex(),
+                dto.description(),
+                dto.size(),
+                new Date(System.currentTimeMillis()),
+                false,
+                dto.specie(),
+                user);
+
+        List<String> imageUrls = processImages(images);
+        pet.setImageUrls(imageUrls);
+
+        petRepository.save(pet);
+
+        return new SendPetToClientDTO(
+                pet.getId(),
+                pet.getNickname(),
+                pet.getSex(),
+                pet.getSize(),
+                pet.getSpecie(),
+                pet.getDescription(),
+                pet.getUser(),
+                pet.getImageUrls()
+        );
+    }
+
+    private List<String> processImages(List<MultipartFile> images) throws IOException {
+        List<String> imageUrls = new ArrayList<>();
+        if (images != null) {
+            if (images.size() > 4)
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "each pet has a limit of 4 images");
+
+            for (MultipartFile image : images) {
+                if (image.getSize() > 10 * 1024 * 1024)
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "image file " + image.getOriginalFilename() + " is too big");
+
+                String url = supabaseStorageService.uploadFile("pet-images", image);
+                imageUrls.add(url);
+            }
+        }
+        return imageUrls;
+    }
+
     public boolean isPetFromLoggedUser(Long id, Principal principal){
         User user = (User) userService.findByEmail(principal.getName());
 
@@ -96,9 +148,8 @@ public class PetService {
                 pet.getSize(),
                 pet.getSpecie(),
                 pet.getDescription(),
-                pet.isAdopted(),
-                pet.getRegisteredAt(),
-                pet.getUser()
+                pet.getUser(),
+                pet.getImageUrls()
         );
     }
 
